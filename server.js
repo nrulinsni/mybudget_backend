@@ -13,9 +13,9 @@ const app = express();
 
 
 // Inicuma sebagai cadangankalau proxy dimatikan
-app.use(cors({
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173"]
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
 
 
 app.use(express.json());

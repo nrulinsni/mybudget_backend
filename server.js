@@ -11,17 +11,37 @@ const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
-
-// Inicuma sebagai cadangankalau proxy dimatikan
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+];
 
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    console.log("--------------------");
+    console.log("Request Origin Header:", origin);
+    console.log("Allowed Origins List:", allowedOrigins);
+
+    if (!origin || allowedOrigins.includes(origin)) {
+      console.log("CORS check passed for origin:", origin);
+      callback(null, true);
+    } else {
+      console.error("CORS check FAILED for origin:", origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// API Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/income", incomeRoutes);
 app.use("/api/v1/expense", expenseRoutes);
@@ -29,10 +49,10 @@ app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/user", userRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Backend is running!'); 
+  res.send('Backend is running!');
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080; // Port default di banyak platform hosting
 
 connectDB();
 

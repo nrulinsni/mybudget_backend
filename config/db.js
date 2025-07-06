@@ -1,35 +1,33 @@
+// backend/config/db.js
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-console.log("--- Reading Environment Variables from Server ---");
-console.log("DB_HOST:", process.env.DB_HOST);
-console.log("DB_PORT:", process.env.DB_PORT);
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_NAME:", process.env.DB_NAME);
-console.log("---------------------------------------------");
-
-// buat instance Sequelize untuk koneksi database
 const sequelize = new Sequelize(
-  process.env.DB_NAME,      // nama database dari file .env
-  process.env.DB_USER,      // user database dari file .env
-  process.env.DB_PASSWORD,  // Password database dari file .env
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT, 
-    dialect: 'mysql'           
+    port: process.env.DB_PORT,
+    dialect: 'mysql',
+
+    dialectOptions: {
+      ssl: {
+        minVersion: 'TLSv1.2',
+        rejectUnauthorized: true,
+      }
+    }
   }
 );
 
-// Fungsi untuk mengecek koneksi
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log('MySQL connected successfully.');
+    console.log('MySQL connected successfully via secure connection.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     process.exit(1);
   }
 };
 
-// Ekspor instance dan fungsi koneksi
 module.exports = { sequelize, connectDB };

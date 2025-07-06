@@ -1,16 +1,15 @@
-// config/db.js
-
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Buat instance Sequelize untuk koneksi database
+// buat instance Sequelize untuk koneksi database
 const sequelize = new Sequelize(
-  process.env.DB_NAME,      // Nama database dari file .env
-  process.env.DB_USER,      // User database dari file .env
+  process.env.DB_NAME,      // nama database dari file .env
+  process.env.DB_USER,      // user database dari file .env
   process.env.DB_PASSWORD,  // Password database dari file .env
   {
-    host: process.env.DB_HOST, // Host database (misal: 'localhost') dari file .env
-    dialect: 'mysql'           // Kita memberitahu Sequelize bahwa kita menggunakan MySQL
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT, 
+    dialect: 'mysql'           
   }
 );
 
